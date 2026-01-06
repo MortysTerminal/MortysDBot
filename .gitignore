@@ -1,0 +1,18 @@
+**/bin/
+**/obj/
+**/.vs/
+logs/
+*.user
+*.suo
+
+# Secrets / env files
+**/.env
+**/.env.*
+docker/.env
+
+# Optional: publish output
+publish/
+
+# Rider/VS Code (optional)
+**/.idea/
+**/.vscode/
