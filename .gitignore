@@ -5,10 +5,11 @@ logs/
 *.user
 *.suo
 
-# Secrets / env files
+# Secrets
 **/.env
 **/.env.*
 docker/.env
+**/*secrets*.json
 
 # Optional: publish output
 publish/
@@ -16,3 +17,6 @@ publish/
 # Rider/VS Code (optional)
 **/.idea/
 **/.vscode/
+
+# Local development overrides
+src/MortysDBot.Bot/appsettings.Development.json
