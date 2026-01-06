@@ -108,6 +108,18 @@ public sealed class DiscordBotHostedService : BackgroundService
             await _interactions.RegisterCommandsGloballyAsync();
             _logger.LogInformation("Registered commands globally.");
         }
+
+        try
+        {
+            Directory.CreateDirectory("health");
+            await File.WriteAllTextAsync("health/ready.txt", DateTimeOffset.UtcNow.ToString("O"));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to write health file.");
+        }
+
+
     }
 
     private async Task OnInteractionCreatedAsync(SocketInteraction interaction)

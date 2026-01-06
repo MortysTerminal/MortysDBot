@@ -1,12 +1,24 @@
-# MortysDBot
+# MortysDBot Docker Deployment
 
-Discord Bot in C#/.NET.
+## Requirements
+- Docker + Docker Compose Plugin
 
-## Local Run
-- Set Discord token via user-secrets:
-  - `dotnet user-secrets set "Discord:Token" "..."` (in src/MortysDBot.Bot)
-- Run:
-  - `dotnet run --project src/MortysDBot.Bot`
+## Configuration
+Create environment variables in Portainer Stack (recommended) or via `.env`:
+- `DISCORD_TOKEN` (required)
+- `DISCORD_GUILD_ID` (optional, speeds up slash command registration)
 
-## Docker (Proxmox)
-See `docker/`.
+## Deploy / Update
+- Portainer: Stack -> Update the stack -> Pull latest & redeploy
+- CLI (if used):
+  - `docker compose up -d --build`
+
+## Logs
+- Portainer: Container -> Logs
+- CLI:
+  - `docker compose logs -f bot`
+
+## Restart
+- Portainer: restart container
+- CLI:
+  - `docker compose restart bot`

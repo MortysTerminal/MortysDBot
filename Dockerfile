@@ -20,4 +20,8 @@ RUN mkdir -p /app/logs && \
 
 USER botuser
 
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+  CMD test -f /app/health/ready.txt || exit 1
+
+
 ENTRYPOINT ["dotnet", "MortysDBot.Bot.dll"]
