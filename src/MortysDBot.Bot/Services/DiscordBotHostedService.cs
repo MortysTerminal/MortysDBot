@@ -14,6 +14,7 @@ public sealed class DiscordBotHostedService : BackgroundService
     private readonly InteractionService _interactions;
     private readonly IServiceProvider _services;
     private readonly DiscordOptions _options;
+    private readonly IHostEnvironment _env;
     private readonly ILogger<DiscordBotHostedService> _logger;
 
     public DiscordBotHostedService(
@@ -21,17 +22,29 @@ public sealed class DiscordBotHostedService : BackgroundService
         InteractionService interactions,
         IServiceProvider services,
         IOptions<DiscordOptions> options,
+        IHostEnvironment env,
         ILogger<DiscordBotHostedService> logger)
     {
         _client = client;
         _interactions = interactions;
         _services = services;
         _options = options.Value;
+        _env = env;
         _logger = logger;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        var version = typeof(DiscordBotHostedService).Assembly.GetName().Version?.ToString() ?? "unknown";
+
+        _logger.LogInformation(
+            "Starting MortysDBot | Version={Version} | Env={Env} | GuildId={GuildId} | Machine={Machine}",
+            version,
+            _env.EnvironmentName,
+            _options.GuildId,
+            Environment.MachineName);
+
+
         _client.Log += msg =>
         {
             _logger.Log(
@@ -59,6 +72,7 @@ public sealed class DiscordBotHostedService : BackgroundService
         await _client.LoginAsync(TokenType.Bot, _options.Token);
         await _client.StartAsync();
 
+        _logger.LogInformation("Discord client started. Waiting for shutdown signal...");
         _logger.LogInformation("MortysDBot started.");
 
         try
@@ -71,7 +85,9 @@ public sealed class DiscordBotHostedService : BackgroundService
         }
         finally
         {
+            _logger.LogInformation("Shutdown requested. Stopping Discord client...");
             await _client.StopAsync();
+            _logger.LogInformation("Discord client stopped.");
             _logger.LogInformation("MortysDBot stopped.");
         }
     }
