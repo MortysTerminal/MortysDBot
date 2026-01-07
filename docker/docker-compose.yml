@@ -1,17 +1,35 @@
 services:
+  postgres:
+    image: postgres:16
+    container_name: mortysdbot-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
   bot:
     build:
       context: ..
       dockerfile: Dockerfile
     container_name: mortysdbot
+    depends_on:
+      postgres:
+        condition: service_healthy
     environment:
       DOTNET_ENVIRONMENT: Production
-
-      # Discord Token als ENV (Secret)
       Discord__Token: ${DISCORD_TOKEN}
-
-      # optional: schnellere Command-Registrierung
       Discord__GuildId: ${DISCORD_GUILD_ID:-0}
+
+      # (wird später genutzt, wenn EF Core drin ist)
+      ConnectionStrings__MortysDBot: Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
 
     volumes:
       - bot_logs:/app/logs
@@ -19,3 +37,4 @@ services:
 
 volumes:
   bot_logs:
+  pg_data:
