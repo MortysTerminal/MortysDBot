@@ -24,11 +24,22 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      DOTNET_ENVIRONMENT: Development
-      Discord__Token: ${DISCORD_TOKEN}
-      Discord__GuildId: ${DISCORD_GUILD_ID:-0}
+      DOTNET_ENVIRONMENT: Production
 
-      # (wird später genutzt, wenn EF Core drin ist)
+      Discord__Token: ${DISCORD_TOKEN}
+      Discord__GuildId: ${DISCORD_GUILD_ID}
+
+      Twitch__ClientId: ${TWITCH_CLIENT_ID}
+      Twitch__ClientSecret: ${TWITCH_CLIENT_SECRET}
+
+      # Channels am besten via gemountete appsettings.Production.json (siehe unten)
+      # oder per env-json (Variante B)
+
+      ScheduleSync__Enabled: "true"
+      ScheduleSync__IntervalMinutes: "30"
+      ScheduleSync__MaxDaysAhead: "14"
+      ScheduleSync__DeleteHoursAfterEnd: "6"
+
       ConnectionStrings__MortysDBot: Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
 
     volumes:
@@ -36,5 +47,5 @@ services:
     restart: unless-stopped
 
 volumes:
-  bot_logs:
   pg_data:
+  bot_logs:
