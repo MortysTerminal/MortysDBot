@@ -1,0 +1,7 @@
+services:
+  bot:
+    environment:
+      DOTNET_ENVIRONMENT: Production
+      ScheduleSync__IntervalMinutes: "30"
+    volumes:
+      - /opt/mortysdbot/config/appsettings.Production.json:/app/appsettings.Production.json:ro

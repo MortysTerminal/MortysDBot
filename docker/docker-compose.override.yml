@@ -1,0 +1,7 @@
+services:
+  bot:
+    environment:
+      DOTNET_ENVIRONMENT: Development
+      ScheduleSync__IntervalMinutes: "1"
+    volumes:
+      - ../src/MortysDBot.Bot/appsettings.Development.json:/app/appsettings.Development.json:ro

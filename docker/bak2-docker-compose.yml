@@ -1,0 +1,19 @@
+services:
+  bot:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    environment:
+      DOTNET_ENVIRONMENT: Production
+      Discord__Token: ${DISCORD_TOKEN}
+      Discord__GuildId: ${DISCORD_GUILD_ID}
+      Twitch__ClientId: ${TWITCH_CLIENT_ID}
+      Twitch__ClientSecret: ${TWITCH_CLIENT_SECRET}
+      ScheduleSync__Enabled: "true"
+      ScheduleSync__IntervalMinutes: "30"
+      ScheduleSync__MaxDaysAhead: "14"
+      ScheduleSync__DeleteHoursAfterEnd: "6"
+      ConnectionStrings__MortysDBot: Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+    volumes:
+      pg_data:
+      bot_logs:
